@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ล็อกอินเข้าระบบจองห้องประชุม</title>
+  <style>
+    body {
+      font-family: 'Kanit', 'Segoe UI', Tahoma, sans-serif;
+      color: #5D4037;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      transition: background-image 1s ease-in-out;
+      position: relative;
+    }
+
+    /* Overlay สีชมพูอ่อน เพื่อให้อ่านข้อความชัด */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 240, 245, 0.55);
+      z-index: -1;
+    }
+
+    .login-container {
+      background-color: rgba(255, 255, 255, 0.92);
+      padding: 30px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      width: 90%;
+      max-width: 400px;
+      text-align: center;
+      backdrop-filter: blur(4px);
+    }
+    .login-container h1 {
+      color: #D81B60;
+      margin-top: 0;
+      margin-bottom: 25px;
+      font-size: 1.8em;
+    }
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #C2185B;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #F8BBD0;
+      border-radius: 5px;
+      font-size: 1em;
+      background-color: #FFEBEE;
+      box-sizing: border-box;
+    }
+    button#loginButton {
+      background-color: #EC407A;
+      color: white;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: background-color 0.3s ease, opacity 0.3s ease;
+      width: 100%;
+    }
+    button#loginButton:hover {
+      background-color: #D81B60;
+    }
+    button#loginButton:disabled {
+      background-color: #F48FB1;
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    #feedbackDiv {
+      color: #C62828;
+      margin-top: 15px;
+      min-height: 20px;
+      font-size: 0.9em;
+      font-weight: bold;
+    }
+    .loading-text {
+      color: #5D4037;
+      font-size: 1.1em;
+    }
+
+    /* ปุ่มเปลี่ยนพื้นหลัง */
+    .bg-controls {
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .bg-controls button {
+      background-color: #F8BBD0;
+      color: #880E4F;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 0.85em;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .bg-controls button:hover {
+      background-color: #EC407A;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container" id="loginContainerDiv">
+    <h1>เข้าสู่ระบบ</h1>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="username">ชื่อผู้ใช้:</label>
+        <input type="text" id="username" name="username" placeholder="admin" required>
+      </div>
+      <div class="form-group">
+        <label for="password">รหัสผ่าน:</label>
+        <input type="password" id="password" name="password" placeholder="Srd-2568" required>
+      </div>
+      <button type="submit" id="loginButton">ล็อกอิน</button>
+    </form>
+    <div id="feedbackDiv"></div>
+
+    <!-- ปุ่มควบคุมพื้นหลัง -->
+    <div class="bg-controls">
+      <button type="button" id="changeBgBtn">เปลี่ยนรูปภาพ</button>
+      <button type="button" id="toggleAutoBtn">เปิดสลับอัตโนมัติ</button>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // 1. นำ URL ของ Web App จาก Google Apps Script มาใส่ตรงนี้
+    // ==========================================
+    const API_URL = "https://script.google.com/macros/s/AKfycbxJzSWkkIEfVWrtAjWCQc6-6IwxTB0xhxeP9BULxPeoZFzC6M61hh13XwW2EQEyjtNz/exec"; 
+
+    // ==================== ระบบพื้นหลัง ====================
+    const backgroundImages = [
+      "https://i.postimg.cc/7ZhkVNF6/bgweb-m57w7IJFri34138.jpg",
+      "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?q=80&w=1600",
+      "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1600" 
+    ];
+
+    let currentBgIndex = 0;
+    let autoChangeInterval = null;
+    let isAutoChange = false;
+
+    function setBackground(index) {
+      currentBgIndex = index % backgroundImages.length;
+      document.body.style.backgroundImage = `url('${backgroundImages[currentBgIndex]}')`;
+    }
+
+    function nextBackground() {
+      setBackground(currentBgIndex + 1);
+    }
+
+    function toggleAutoChange() {
+      const btn = document.getElementById('toggleAutoBtn');
+      if (isAutoChange) {
+        clearInterval(autoChangeInterval);
+        isAutoChange = false;
+        btn.textContent = 'เปิดสลับอัตโนมัติ';
+      } else {
+        autoChangeInterval = setInterval(nextBackground, 8000); // เปลี่ยนทุก 8 วินาที
+        isAutoChange = true;
+        btn.textContent = 'ปิดสลับอัตโนมัติ';
+      }
+    }
+
+    // เริ่มต้นแสดงรูปที่ 1 และเปิดสลับอัตโนมัติ
+    setBackground(0);
+    toggleAutoChange(); 
+
+    document.getElementById('changeBgBtn').addEventListener('click', nextBackground);
+    document.getElementById('toggleAutoBtn').addEventListener('click', toggleAutoChange);
+
+
+    // ==================== ระบบล็อกอิน (API Fetch) ====================
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+      event.preventDefault(); 
+      
+      const u = document.getElementById('username').value;
+      const p = document.getElementById('password').value;
+      const feedbackDiv = document.getElementById('feedbackDiv');
+      const loginButton = document.getElementById('loginButton');
+      const loginContainerDiv = document.getElementById('loginContainerDiv');
+      
+      feedbackDiv.textContent = ''; 
+      loginButton.disabled = true;
+      loginButton.textContent = 'กำลังตรวจสอบ...';
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'login', username: u, password: p })
+        });
+        
+        const res = await response.json();
+
+        if (res.success) {
+          // ล็อกอินสำเร็จ
+          loginContainerDiv.innerHTML = '<h2 class="loading-text" style="color:#D81B60;">ล็อกอินสำเร็จ!</h2><p class="loading-text">กำลังนำท่านเข้าสู่ระบบ...</p>';
+          
+          // บันทึก Token ลงใน Browser
+          localStorage.setItem('appToken', res.token);
+          
+          // เปลี่ยนหน้าไปยัง index.html หลังจากผ่านไป 1 วินาที
+          setTimeout(() => {
+            window.location.href = "index.html"; 
+          }, 1000);
+
+        } else {
+          // รหัสผ่านผิด
+          feedbackDiv.textContent = res.error || "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+          loginButton.disabled = false; 
+          loginButton.textContent = 'ล็อกอิน';
+        }
+      } catch (error) {
+        // กรณีเชื่อมต่อเซิร์ฟเวอร์ไม่ได้
+        feedbackDiv.textContent = "เกิดข้อผิดพลาดในการเชื่อมต่อ: " + error.message;
+        loginButton.disabled = false; 
+        loginButton.textContent = 'ล็อกอิน';
+      }
+    });
+
+    // ถ้าพบว่าเคยล็อกอินไว้แล้ว ให้พาไปหน้า index.html อัตโนมัติ <!-- test deploy -->
+    window.onload = () => {
+      if (localStorage.getItem('appToken')) {
+        window.location.href = "index.html";
+      }
+    };
+  </script>
+</body>
+</html>
