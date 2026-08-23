@@ -2,362 +2,498 @@
 <html lang="th">
 <head>
   <base target="_top">
-  <title>จองห้องประชุมเทศบาลตำบลบึงโขงหลง</title>
+  <title>ระบบจองห้องประชุม - เทศบาลตำบลบึงโขงหลง</title>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+
   <style>
+    :root {
+      --primary: #E91E63;
+      --primary-hover: #C2185B;
+      --primary-light: #FCE4EC;
+      --primary-gradient: linear-gradient(135deg, #EC407A 0%, #D81B60 100%);
+      --surface: #FFFFFF;
+      --bg: #F8FAFC;
+      --text-main: #1E293B;
+      --text-muted: #64748B;
+      --border: #E2E8F0;
+      --border-focus: #F472B6;
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.03);
+      --shadow-md: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01);
+      --shadow-lg: 0 20px 30px -10px rgba(233, 30, 99, 0.15);
+    }
+
     *, *::before, *::after { box-sizing: border-box; }
-    html { -webkit-text-size-adjust: 100%; }
+    html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
     body {
-      font-family: 'Kanit', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #FFF0F5;
-      background-image: url('https://i.postimg.cc/7ZhkVNF6/bgweb-m57w7IJFri34138.jpg');
-      background-size: cover;
-      background-position: center center;
-      background-attachment: scroll; 
-      background-repeat: no-repeat;
-      color: #6c2c10;
+      font-family: 'Kanit', sans-serif;
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(252, 228, 236, 0.8) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(24ce, 230, 242, 0.4) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-main);
       margin: 0;
-      padding: 10px;
+      padding: 16px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      line-height: 1.5;
-      overflow-x: hidden;
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(255, 240, 245, 0.82);
-      z-index: -1;
-      pointer-events: none;
+      line-height: 1.6;
     }
 
     .page-wrapper {
       width: 100%;
-      max-width: 1600px;
+      max-width: 1400px;
       margin: 0 auto;
-      display: none; /* ซ่อนไว้ก่อนจนกว่าจะเช็ค Login ผ่าน */
     }
 
-    /* ===== Header ===== */
-    .header {
-      text-align: center;
-      margin-bottom: 14px;
-      width: 100%;
+    /* ===== Top Navbar / Header ===== */
+    .header-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      padding: 18px 24px;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
     .header img {
-      max-height: 80px;
+      max-height: 52px;
       width: auto;
-      margin-bottom: 6px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.05));
     }
-    .header h1 {
-      font-size: clamp(1.15rem, 4vw, 1.5rem);
-      color: #D81B60;
-      margin: 0 0 12px 0;
-      line-height: 1.3;
-      padding: 0 4px;
+    .header-titles h1 {
+      font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+      font-weight: 700;
+      color: #9C1448;
+      margin: 0;
+      letter-spacing: -0.02em;
     }
-    .header-buttons {
+    .header-titles p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+    .badge-online {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ECFDF5;
+      color: #059669;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 0 2px #A7F3D0;
+    }
+
+    /* ===== Main Layout Grid ===== */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+      padding: 24px;
+      position: relative;
+    }
+
+    .card-header {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 8px;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #F1F5F9;
     }
-    .header button {
-      background-color: #757575 !important;
-      font-size: 0.9rem !important;
-      padding: 10px 16px !important;
-      min-height: 44px;
-      flex: 1 1 auto;
-      max-width: 180px;
+    .card-header i {
+      color: var(--primary);
     }
-
-    /* ===== Layout ===== */
-    .page-content-wrapper {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      width: 100%;
-      align-items: flex-start;
-    }
-    .content-column {
-      background: #fff;
-      padding: 16px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      margin-bottom: 10px;
-      width: 100%;
-    }
-    .form-column { flex: 1 1 360px; min-width: 0; }
-    .calendar-column { flex: 2 1 480px; min-width: 0; }
-
-    .content-column h2 {
-      font-size: clamp(1.15rem, 3.5vw, 1.3rem);
-      color: #5D4037;
-      margin: 0 0 14px 0;
-      text-align: center;
-      border-bottom: 1px solid #F48FB1;
-      padding-bottom: 10px;
+    .card-header h2 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #334155;
+      margin: 0;
     }
 
-    /* ===== Form ===== */
+    /* ===== Modern Form Controls ===== */
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 12px;
-      margin-bottom: 14px;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
     }
+    .full-width { grid-column: 1 / -1; }
+
     .form-group {
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 6px;
     }
     .form-group label {
-      font-weight: 600;
-      color: #C2185B;
-      font-size: 0.92rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
     .form-group input,
     .form-group select,
     .form-group textarea {
       width: 100%;
-      padding: 12px 13px;
-      border: 1.5px solid #F8BBD0;
-      border-radius: 8px;
-      font-size: 16px; 
-      background: #FFEBEE;
-      color: #5D4037;
-      min-height: 46px;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.92rem;
+      color: var(--text-main);
+      background: #FAFAFA;
+      font-family: inherit;
+      transition: all 0.2s ease;
+      min-height: 42px;
     }
     .form-group textarea {
-      min-height: 80px;
+      min-height: 72px;
       resize: vertical;
     }
     .form-group input:focus,
     .form-group select:focus,
     .form-group textarea:focus {
       outline: none;
-      border-color: #EC407A;
-      box-shadow: 0 0 0 3px rgba(236, 64, 122, 0.2);
+      background: #FFF;
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(244, 114, 182, 0.15);
     }
 
-    .button-group {
-      text-align: center;
-      margin-top: 12px;
-      display: flex;
-      flex-wrap: wrap;
+    .capacity-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      background: var(--primary-light);
+      color: var(--primary-hover);
+      border-radius: 6px;
+      font-weight: 600;
+      margin-left: auto;
+    }
+
+    /* ===== Buttons ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
       justify-content: center;
-      gap: 10px;
-    }
-    button {
-      background: #EC407A;
-      color: white;
-      padding: 12px 18px;
+      gap: 8px;
+      font-family: inherit;
+      font-weight: 500;
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
+      border-radius: var(--radius-sm);
       cursor: pointer;
-      min-height: 46px;
-      transition: background 0.2s, transform 0.1s;
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
+      padding: 11px 20px;
     }
-    button:hover { background: #D81B60; }
-    button:active { transform: scale(0.98); }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
-    button.report-button { background: #7E57C2; }
-    button.report-button:hover { background: #5E35B1; }
-    button.bg-button { background: #9C27B0 !important; }
-    button.bg-button:hover { background: #7B1FA2 !important; }
+    .btn-primary {
+      background: var(--primary-gradient);
+      color: white;
+      box-shadow: var(--shadow-lg);
+      width: 100%;
+      margin-top: 8px;
+    }
+    .btn-primary:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+    .btn-primary:active {
+      transform: translateY(1px);
+    }
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
 
-    /* ===== Calendar ===== */
+    /* ===== FullCalendar Theme Adjustments ===== */
     #imageGallery {
       width: 100%;
-      min-height: 420px;
-      background: #fafafa;
-      border-radius: 8px;
-      overflow: hidden;
+      min-height: 480px;
     }
-    .fc { font-size: 0.88rem; }
+    .fc {
+      font-family: inherit;
+    }
     .fc .fc-toolbar-title {
-      font-size: clamp(1rem, 3.5vw, 1.25rem) !important;
-      color: #C2185B;
+      font-size: 1.15rem !important;
+      font-weight: 600;
+      color: #1E293B;
+    }
+    .fc-theme-standard td, .fc-theme-standard th {
+      border-color: #F1F5F9 !important;
+    }
+    .fc-theme-standard th {
+      background: #F8FAFC;
+      padding: 10px 0 !important;
+      font-weight: 500;
+      color: var(--text-muted);
+      font-size: 0.85rem;
     }
     .fc .fc-button-primary {
-      background: #F06292 !important;
-      border-color: #F06292 !important;
-      padding: 6px 10px !important;
+      background: #FFF !important;
+      border: 1px solid var(--border) !important;
+      color: #334155 !important;
+      border-radius: 8px !important;
+      padding: 6px 12px !important;
+      font-weight: 500 !important;
       font-size: 0.85rem !important;
+      box-shadow: var(--shadow-sm);
+    }
+    .fc .fc-button-primary:hover {
+      background: #F8FAFC !important;
+      border-color: #CBD5E1 !important;
+    }
+    .fc .fc-button-primary.fc-button-active {
+      background: var(--primary) !important;
+      border-color: var(--primary) !important;
+      color: #FFF !important;
     }
     .fc-event {
+      background-color: #FCE4EC !important;
+      border-left: 3px solid var(--primary) !important;
+      border-top: none !important;
+      border-bottom: none !important;
+      border-right: none !important;
+      color: #9C1448 !important;
+      padding: 3px 6px !important;
       border-radius: 4px !important;
-      font-size: 0.78rem !important;
-      cursor: pointer;
-    }
-    .fc .fc-toolbar {
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 10px !important;
-    }
-    .fc .fc-toolbar-chunk {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      justify-content: center;
+      font-size: 0.8rem !important;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
 
-    /* ===== Report section ===== */
-    .report-section {
-      margin-top: 16px;
-      padding-top: 12px;
-      border-top: 1px dashed #F48FB1;
+    /* ===== Reports Section ===== */
+    .report-card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 18px;
     }
-    .report-section h3 {
-      text-align: center;
-      margin: 0 0 12px 0;
-      color: #5D4037;
-      font-size: 1.05rem;
+    .btn-report {
+      background: #F8FAFC;
+      border: 1px solid var(--border);
+      color: #475569;
+      padding: 10px;
+      font-size: 0.85rem;
+      border-radius: var(--radius-sm);
+    }
+    .btn-report:hover {
+      background: #EDE9FE;
+      border-color: #DDD6FE;
+      color: #6D28D9;
     }
 
-    /* ===== Modal ===== */
+    /* ===== Modal & Dialogs ===== */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.5);
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(4px);
       display: none;
       justify-content: center;
       align-items: center;
       z-index: 1050;
-      padding: 12px;
+      padding: 16px;
+      animation: fadeIn 0.2s ease-out;
     }
     .modal-content {
-      background: #fff;
-      padding: 20px 16px;
-      border-radius: 12px;
+      background: #FFF;
+      padding: 24px;
+      border-radius: var(--radius-lg);
       width: 100%;
-      max-width: 420px;
-      max-height: 90vh;
-      overflow-y: auto;
+      max-width: 440px;
+      box-shadow: var(--shadow-lg);
+      animation: slideUp 0.2s ease-out;
     }
-    .modal-content h3 {
-      margin: 0 0 14px 0;
-      color: #C2185B;
-      text-align: center;
+    .modal-title {
       font-size: 1.15rem;
+      font-weight: 600;
+      color: #1E293B;
+      margin: 0 0 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     .modal-actions {
-      margin-top: 18px;
       display: flex;
       justify-content: flex-end;
       gap: 10px;
-      flex-wrap: wrap;
+      margin-top: 20px;
     }
-    .modal-actions button {
-      flex: 1 1 auto;
-      min-width: 120px;
+
+    /* ===== Toast / Notification ===== */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
     }
-    .modal-actions button#cancelModalButton { background: #BDBDBD; }
+    .toast {
+      pointer-events: auto;
+      min-width: 280px;
+      max-width: 400px;
+      background: white;
+      padding: 14px 18px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 0.9rem;
+      border-left: 4px solid #CBD5E1;
+      animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .toast.success { border-left-color: #10B981; }
+    .toast.error { border-left-color: #EF4444; }
+    .toast.info { border-left-color: #3B82F6; }
+
+    /* ===== Spinner ===== */
+    .loader-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(2px);
+      border-radius: var(--radius-lg);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid #FCE4EC;
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
 
     /* ===== Footer ===== */
     .footer {
+      margin-top: 30px;
       text-align: center;
-      margin-top: 16px;
-      padding-top: 12px;
-      border-top: 1px solid #F48FB1;
-      color: #AD1457;
-      font-size: 0.82rem;
-      width: 100%;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      padding: 12px 0;
     }
 
-    /* ===== Feedback & Loading ===== */
-    .loading-spinner {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #EC407A;
-      border-radius: 50%;
-      width: 32px; height: 32px;
-      animation: spin 0.8s linear infinite;
-      margin: 14px auto;
-      display: none;
-    }
+    /* ===== Keyframe Animations ===== */
     @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes toastIn { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-    #feedbackMessage {
-      text-align: center;
-      padding: 12px 14px;
-      margin: 12px 0 0 0;
-      border-radius: 8px;
-      display: none;
-      font-size: 0.95rem;
-      word-break: break-word;
+    /* ===== Responsive Design ===== */
+    @media (max-width: 1024px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
     }
-    #feedbackMessage.success { background: #C8E6C9; color: #2E7D32; }
-    #feedbackMessage.error { background: #FFCDD2; color: #C62828; }
-    #feedbackMessage.info { background: #BBDEFB; color: #0D47A1; text-align: left; }
-
-    /* ===== Media Queries ===== */
-    @media (max-width: 992px) {
-      .page-content-wrapper { flex-direction: column; }
-      .form-column, .calendar-column { width: 100%; flex: none; }
-      .form-column { order: 1; }
-      .calendar-column { order: 2; }
-      #imageGallery { min-height: 480px; }
-    }
-    @media (max-width: 600px) {
-      body { padding: 8px; }
-      .header img { max-height: 65px; }
-      .header-buttons { gap: 6px; }
-      .header button { max-width: none; flex: 1 1 45%; font-size: 0.85rem !important; padding: 10px 12px !important; }
-      .content-column { padding: 14px 12px; }
-      .form-grid { grid-template-columns: 1fr; gap: 11px; }
-      .button-group button { width: 100%; max-width: 100%; }
-      #imageGallery { min-height: 380px; }
-      .fc .fc-toolbar-title { font-size: 1rem !important; }
-      .fc .fc-button { padding: 5px 8px !important; font-size: 0.8rem !important; }
-      .modal-content { padding: 18px 14px; }
-      .modal-actions { flex-direction: column; }
-      .modal-actions button { width: 100%; }
+    @media (max-width: 640px) {
+      body { padding: 10px; }
+      .header-card { flex-direction: column; text-align: center; gap: 12px; }
+      .header-left { flex-direction: column; }
+      .form-grid { grid-template-columns: 1fr; }
+      .report-card-grid { grid-template-columns: 1fr; }
+      .card { padding: 16px; }
+      .modal-actions { flex-direction: column-reverse; }
+      .modal-actions .btn { width: 100%; }
     }
   </style>
 </head>
 <body>
 
-  <!-- แจ้งเตือนกำลังโหลดก่อนตรวจสอบสิทธิ์ -->
-  <div id="initialLoading" style="text-align: center; color: #D81B60; margin-top: 20vh;">
-    <h2>กำลังเชื่อมต่อระบบ...</h2>
-    <div class="loading-spinner" style="display: block;"></div>
-  </div>
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
 
   <div class="page-wrapper" id="mainAppWrapper">
-    <div class="header">
-      <img src="https://i.postimg.cc/C5RsRHgV/S-5677128-1.png" alt="โลโก้" onerror="this.style.display='none'">
-      <h1>จองห้องประชุมเทศบาลตำบลบึงโขงหลง</h1>
-      <div class="header-buttons">
-        <button onclick="handleLogout()">ออกจากระบบ</button>
+    
+    <!-- Header -->
+    <header class="header-card">
+      <div class="header-left">
+        <img src="https://i.postimg.cc/C5RsRHgV/S-5677128-1.png" alt="โลโก้เทศบาล" onerror="this.style.display='none'">
+        <div class="header-titles">
+          <h1>เทศบาลตำบลบึงโขงหลง</h1>
+          <p>ระบบจองห้องประชุมและตรวจสอบตารางการใช้งาน</p>
+        </div>
       </div>
-    </div>
+      <div class="badge-online">
+        <span class="badge-dot"></span>
+        <span>ระบบพร้อมใช้งาน</span>
+      </div>
+    </header>
 
-    <div class="page-content-wrapper">
-      <!-- ฟอร์ม -->
-      <div class="content-column form-column">
-        <h2>กรอกข้อมูลการจอง</h2>
+    <!-- Content Grid -->
+    <div class="main-grid">
+      
+      <!-- ฟอร์มการจอง -->
+      <section class="card">
+        <div class="loader-overlay" id="formLoader"><div class="spinner"></div></div>
+        
+        <div class="card-header">
+          <i data-lucide="edit-3"></i>
+          <h2>แบบฟอร์มการจอง</h2>
+        </div>
+
         <form id="bookingForm">
           <div class="form-grid">
-            <div class="form-group">
-              <label for="nameInput">ชื่อ-นามสกุล ผู้จอง:</label>
-              <input type="text" id="nameInput" required>
+            <div class="form-group full-width">
+              <label for="nameInput"><i data-lucide="user" style="width:14px;"></i> ชื่อ-นามสกุล ผู้จอง</label>
+              <input type="text" id="nameInput" placeholder="ระบุชื่อจริงและนามสกุล" required>
             </div>
-            <div class="form-group">
-              <label for="PhoneInput">เบอร์โทรศัพท์:</label>
-              <input type="tel" id="PhoneInput" required>
+
+            <div class="form-group full-width">
+              <label for="PhoneInput"><i data-lucide="phone" style="width:14px;"></i> เบอร์โทรศัพท์</label>
+              <input type="tel" id="PhoneInput" placeholder="08x-xxx-xxxx" required>
             </div>
-            <div class="form-group">
-              <label for="departmentSelect">หน่วยงาน / กอง:</label>
+
+            <div class="form-group full-width">
+              <label for="departmentSelect"><i data-lucide="building" style="width:14px;"></i> หน่วยงาน / กอง</label>
               <select id="departmentSelect" required>
-                <option value="">-- กรุณาเลือกหน่วยงาน --</option>
+                <option value="">-- เลือกหน่วยงาน --</option>
                 <option value="สำนักปลัด">สำนักปลัด</option>
                 <option value="กองคลัง">กองคลัง</option>
                 <option value="กองสวัสดิการสังคม">กองสวัสดิการสังคม</option>
@@ -367,100 +503,147 @@
                 <option value="กองสาธารณสุขฯ">กองสาธารณสุขฯ</option>
               </select>
             </div>
-            <div class="form-group">
-              <label for="roomSelect">เลือกห้องประชุม:</label>
+
+            <div class="form-group full-width">
+              <label for="roomSelect">
+                <i data-lucide="door-closed" style="width:14px;"></i> ห้องประชุม
+                <span class="capacity-badge" id="maxCapacity">ความจุ N/A</span>
+              </label>
               <select id="roomSelect" required>
-                <option value="">-- กรุณาเลือกห้อง --</option>
+                <option value="">-- เลือกห้องประชุม --</option>
               </select>
             </div>
-            <div class="form-group">
-              <label for="attendeesInput">จำนวนผู้เข้าร่วม (สูงสุด <span id="maxCapacity">N/A</span> คน):</label>
-              <input type="number" id="attendeesInput" min="1" required>
+
+            <div class="form-group full-width">
+              <label for="attendeesInput"><i data-lucide="users" style="width:14px;"></i> จำนวนผู้เข้าร่วม (คน)</label>
+              <input type="number" id="attendeesInput" min="1" placeholder="ระบุจำนวนคน" required>
             </div>
-            <div class="form-group">
-              <label for="dateInput">วันที่จอง:</label>
+
+            <div class="form-group full-width">
+              <label for="dateInput"><i data-lucide="calendar" style="width:14px;"></i> วันที่ใช้งาน</label>
               <input type="date" id="dateInput" required>
             </div>
+
             <div class="form-group">
-              <label for="startTimeInput">เวลาเริ่มต้น:</label>
+              <label for="startTimeInput"><i data-lucide="clock" style="width:14px;"></i> เวลาเริ่ม</label>
               <input type="time" id="startTimeInput" required>
             </div>
+
             <div class="form-group">
-              <label for="endTimeInput">เวลาสิ้นสุด:</label>
+              <label for="endTimeInput"><i data-lucide="clock" style="width:14px;"></i> เวลาสิ้นสุด</label>
               <input type="time" id="endTimeInput" required>
             </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="purposeInput">วัตถุประสงค์หรือโครงการ:</label>
-              <textarea id="purposeInput" required></textarea>
+
+            <div class="form-group full-width">
+              <label for="purposeInput"><i data-lucide="file-text" style="width:14px;"></i> โครงการ / วัตถุประสงค์</label>
+              <textarea id="purposeInput" placeholder="ระบุรายละเอียดหัวข้อการประชุม" required></textarea>
             </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="targetInput">กลุ่มเป้าหมาย:</label>
-              <textarea id="targetInput"></textarea>
+
+            <div class="form-group full-width">
+              <label for="targetInput"><i data-lucide="target" style="width:14px;"></i> กลุ่มเป้าหมาย</label>
+              <textarea id="targetInput" placeholder="เช่น คณะกรรมการ, ตัวแทนชุมชน" rows="2"></textarea>
             </div>
-            <div class="form-group" style="grid-column: 1 / -1;">
-              <label for="notesInput">หมายเหตุเพิ่มเติม:</label>
-              <textarea id="notesInput"></textarea>
+
+            <div class="form-group full-width">
+              <label for="notesInput"><i data-lucide="info" style="width:14px;"></i> หมายเหตุเพิ่มเติม</label>
+              <textarea id="notesInput" placeholder="เช่น ขอโปรเจกเตอร์, จัดเบรคอาหารว่าง" rows="2"></textarea>
             </div>
           </div>
-          <div class="button-group">
-            <button type="submit" id="uploadButton">ส่งข้อมูลการจอง</button>
-          </div>
+
+          <button type="submit" class="btn btn-primary" id="uploadButton">
+            <i data-lucide="send" style="width:18px;"></i>
+            <span>ยืนยันการจอง</span>
+          </button>
         </form>
-        <div id="feedbackMessage"></div>
-        <div class="loading-spinner" id="loadingSpinner"></div>
+      </section>
+
+      <!-- ปฏิทินและรายงาน -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        <section class="card">
+          <div class="loader-overlay" id="calLoader"><div class="spinner"></div></div>
+          <div class="card-header">
+            <i data-lucide="calendar-range"></i>
+            <h2>ตารางการใช้ห้องประชุม</h2>
+          </div>
+          <div id="imageGallery"></div>
+        </section>
+
+        <section class="card">
+          <div class="card-header" style="margin-bottom: 8px;">
+            <i data-lucide="file-down"></i>
+            <h2>ออกรายงานสรุปการจอง (PDF)</h2>
+          </div>
+          <div class="report-card-grid">
+            <button class="btn btn-report" onclick="openReportModal('daily')">
+              <i data-lucide="calendar-day" style="width:16px;"></i> รายงานรายวัน
+            </button>
+            <button class="btn btn-report" onclick="openReportModal('monthly')">
+              <i data-lucide="calendar-days" style="width:16px;"></i> รายงานรายเดือน
+            </button>
+            <button class="btn btn-report" onclick="openReportModal('yearly')">
+              <i data-lucide="calendar-check" style="width:16px;"></i> รายงานรายปี
+            </button>
+          </div>
+        </section>
       </div>
 
-      <!-- ปฏิทิน -->
-      <div class="content-column calendar-column">
-        <h2>ปฏิทินการจอง</h2>
-        <div id="imageGallery"></div>
+    </div>
 
-        <div class="report-section">
-          <h3>รายงานข้อมูลการจอง (PDF)</h3>
-          <div class="button-group">
-            <button class="report-button" onclick="openReportModal('daily')">รายงานรายวัน</button>
-            <button class="report-button" onclick="openReportModal('monthly')">รายงานรายเดือน</button>
-            <button class="report-button" onclick="openReportModal('yearly')">รายงานรายปี</button>
-          </div>
+    <!-- Modal รายละเอียดการจอง -->
+    <div id="eventDetailModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-title">
+          <i data-lucide="info" style="color:var(--primary);"></i>
+          <span>รายละเอียดการจอง</span>
+        </div>
+        <div id="eventDetailBody" style="font-size: 0.9rem; line-height: 1.8; color: #334155;"></div>
+        <div class="modal-actions">
+          <button id="closeEventModalBtn" class="btn" style="background:#F1F5F9; color:#475569;">ปิด</button>
+          <button id="deleteBookingBtnModal" class="btn" style="background:#FEE2E2; color:#DC2626;">
+            <i data-lucide="trash-2" style="width:16px;"></i> ยกเลิกการจองนี้
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Modal รายงาน -->
+    <!-- Modal ตัวกรองออกรายงาน -->
     <div id="reportModal" class="modal-overlay">
       <div class="modal-content">
-        <h3 id="modalTitle">ระบุข้อมูลสำหรับรายงาน</h3>
-        <div id="modalInputsContainer"></div>
+        <div class="modal-title">
+          <i data-lucide="printer" style="color:var(--primary);"></i>
+          <span id="modalTitle">ออกรายงาน</span>
+        </div>
+        <div id="modalInputsContainer" style="margin-top: 12px;"></div>
         <div class="modal-actions">
-          <button id="generateReportFromModalButton">สร้างรายงาน</button>
-          <button id="cancelModalButton" onclick="closeReportModal()">ยกเลิก</button>
+          <button class="btn" style="background:#F1F5F9; color:#475569;" onclick="closeReportModal()">ยกเลิก</button>
+          <button id="generateReportFromModalButton" class="btn" style="background:var(--primary); color:white;">
+            <i data-lucide="download" style="width:16px;"></i> ดาวน์โหลด PDF
+          </button>
         </div>
       </div>
     </div>
 
-    <div class="footer">
-      <p>พัฒนาโดย นายเกียรติอนันต์ สุกทน | กองยุทธศาสตร์และงบประมาณ</p>
-    </div>
+    <footer class="footer">
+      <p>© พัฒนาโดย กองยุทธศาสตร์และงบประมาณ เทศบาลตำบลบึงโขงหลง</p>
+    </footer>
   </div>
 
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales-all.min.js"></script>
   <script>
-    // =================================================================
-    // API CONFIGURATION 
-    // =================================================================
+    // Lucide Icons Render
+    lucide.createIcons();
+
     const API_URL = "https://script.google.com/macros/s/AKfycbxJzSWkkIEfVWrtAjWCQc6-6IwxTB0xhxeP9BULxPeoZFzC6M61hh13XwW2EQEyjtNz/exec"; 
     
     let calendar = null;
     let allRoomsData = [];
     let currentReportType = '';
-    let appToken = localStorage.getItem('appToken');
+    let selectedEvent = null;
 
-    // =================================================================
-    // CORE FUNCTIONS & UTILS
-    // =================================================================
+    // API Helper
     async function apiCall(payload) {
-      if(appToken) payload.token = appToken;
       try {
         const response = await fetch(API_URL, {
           method: 'POST',
@@ -473,87 +656,85 @@
       }
     }
 
-    function showLoading(isLoading) {
-      const el = document.getElementById('loadingSpinner');
-      if (el) el.style.display = isLoading ? 'block' : 'none';
-    }
-
-    function showFeedback(message, type = 'info') {
-      const el = document.getElementById('feedbackMessage');
-      if (!el) return;
-      el.innerHTML = message;
-      el.className = type;
-      el.style.display = 'block';
-      if (type !== 'info') {
-        setTimeout(() => {
-          if (el.style.display === 'block') {
-            el.style.display = 'none';
-            el.innerHTML = '';
-          }
-        }, type === 'success' ? 4000 : 7000);
-      }
-    }
-
-    function handleLogout() {
-      localStorage.removeItem('appToken');
-      window.location.href = "login.html"; // เปลี่ยนกลับไปหน้า login
-    }
-
-    // =================================================================
-    // INITIALIZATION (เช็ค Login และโหลดข้อมูล)
-    // =================================================================
-    document.addEventListener('DOMContentLoaded', async function() {
-      if (!appToken) {
-        window.location.href = "login.html";
-        return;
-      }
+    // Modern Toast Notification
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
       
-      // ล็อกอินผ่านแล้ว ให้แสดงหน้าต่างแอปหลัก
-      document.getElementById('initialLoading').style.display = 'none';
-      document.getElementById('mainAppWrapper').style.display = 'block';
+      const iconMap = {
+        success: '<i data-lucide="check-circle" style="color:#10B981;"></i>',
+        error: '<i data-lucide="alert-circle" style="color:#EF4444;"></i>',
+        info: '<i data-lucide="info" style="color:#3B82F6;"></i>'
+      };
 
+      toast.innerHTML = `
+        ${iconMap[type] || iconMap.info}
+        <div style="flex:1;">${message}</div>
+      `;
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+
+    function setFormLoading(isLoading) {
+      document.getElementById('formLoader').style.display = isLoading ? 'flex' : 'none';
+      document.getElementById('uploadButton').disabled = isLoading;
+    }
+    function setCalLoading(isLoading) {
+      document.getElementById('calLoader').style.display = isLoading ? 'flex' : 'none';
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async function() {
       initCalendar();
       populateRoomDropdown();
 
       const today = new Date();
       document.getElementById('dateInput').value = today.toISOString().split('T')[0];
 
-      // จัดการการเปลี่ยนห้อง เพื่ออัปเดต Max Capacity
       document.getElementById('roomSelect').addEventListener('change', function() {
         const room = allRoomsData.find(r => r.RoomName === this.value);
+        const maxBadge = document.getElementById('maxCapacity');
+        const attendeesInput = document.getElementById('attendeesInput');
         if (room) {
-          document.getElementById('maxCapacity').textContent = room.Capacity;
-          document.getElementById('attendeesInput').max = room.Capacity;
+          maxBadge.textContent = `ความจุ ${room.Capacity} คน`;
+          attendeesInput.max = room.Capacity;
         } else {
-          document.getElementById('maxCapacity').textContent = 'N/A';
-          document.getElementById('attendeesInput').removeAttribute('max');
+          maxBadge.textContent = 'ความจุ N/A';
+          attendeesInput.removeAttribute('max');
         }
       });
       
       setupFormSubmit();
       setupReportModal();
+      setupDetailModal();
     });
 
-    // =================================================================
-    // CALENDAR SYSTEM
-    // =================================================================
+    // Calendar
     function initCalendar() {
       const calendarEl = document.getElementById('imageGallery');
-      const isMobile = window.innerWidth <= 600;
-      const initialView = isMobile ? 'listWeek' : 'timeGridWeek';
-      const calHeight = isMobile ? 420 : 550;
+      const isMobile = window.innerWidth <= 640;
 
       calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: initialView,
+        initialView: isMobile ? 'listWeek' : 'dayGridMonth',
         locale: 'th',
-        height: calHeight,
+        height: isMobile ? 420 : 560,
         headerToolbar: {
           left: 'prev,next today',
           center: 'title',
-          right: isMobile ? 'dayGridMonth,listWeek' : 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+          right: isMobile ? 'dayGridMonth,listWeek' : 'dayGridMonth,timeGridWeek,listWeek'
         },
-        buttonText: { today: 'วันนี้', month: 'เดือน', week: 'สัปดาห์', day: 'วัน', list: 'รายการ' },
-        navLinks: true, editable: false, selectable: true, dayMaxEvents: true,
+        buttonText: { today: 'วันนี้', month: 'เดือน', week: 'สัปดาห์', list: 'รายการ' },
+        navLinks: true,
+        selectable: true,
+        dayMaxEvents: true,
         select: function(info) {
           document.getElementById('dateInput').value = info.startStr.split('T')[0];
           if (!info.allDay && info.startStr.includes('T')) {
@@ -562,99 +743,98 @@
           document.getElementById('bookingForm').scrollIntoView({ behavior: 'smooth' });
         },
         eventClick: function(info) {
-          const feedbackEl = document.getElementById('feedbackMessage');
-          const props = info.event.extendedProps || {};
+          selectedEvent = info.event;
+          const props = selectedEvent.extendedProps || {};
+          
+          const startDate = selectedEvent.start ? selectedEvent.start.toLocaleDateString('th-TH', { year:'numeric', month:'short', day:'numeric' }) : '-';
+          const startTime = selectedEvent.start ? selectedEvent.start.toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' }) : '-';
+          const endTime = selectedEvent.end ? selectedEvent.end.toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' }) : '-';
 
-          feedbackEl.innerHTML = `
-            <div style="padding:12px; background:#f9f9f9; border:1px solid #ddd; border-radius:8px;">
-              <h4 style="margin:0 0 10px; color:#D81B60;">รายละเอียดการจอง</h4>
-              <p><strong>ห้อง:</strong> ${props.roomName || 'N/A'}</p>
-              <p><strong>ผู้จอง:</strong> ${props.name || 'N/A'}</p>
-              <p><strong>เบอร์โทร:</strong> ${props.phoneNumber || 'N/A'}</p>
-              <p><strong>หน่วยงาน:</strong> ${props.department || 'N/A'}</p>
-              <p><strong>วัตถุประสงค์:</strong> ${info.event.title || 'N/A'}</p>
-              <p><strong>วันที่:</strong> ${info.event.start.toLocaleDateString('th-TH', { year:'numeric', month:'long', day:'numeric' })}</p>
-              <p><strong>เวลา:</strong> ${info.event.start.toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' })} - ${info.event.end ? info.event.end.toLocaleTimeString('th-TH', { hour:'2-digit', minute:'2-digit' }) : 'N/A'}</p>
-              <p><strong>จำนวนผู้เข้าร่วม:</strong> ${props.attendees || 'N/A'}</p>
-              <p><strong>กลุ่มเป้าหมาย:</strong> ${props.targetAudience || 'N/A'}</p>
-              <p><strong>หมายเหตุ:</strong> ${props.notes || 'N/A'}</p>
-              <hr style="margin:12px 0; border:0; border-top:1px solid #F48FB1;">
-              <div style="text-align:right; display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;">
-                <button id="deleteBookingBtnClient" style="background:#D32F2F; color:white; border:none; padding:10px 14px; border-radius:6px; cursor:pointer;">ลบการจองนี้</button>
-                <button id="closeEventDetailsBtnClient" style="background:#757575; color:white; border:none; padding:10px 14px; border-radius:6px; cursor:pointer;">ปิด</button>
-              </div>
+          document.getElementById('eventDetailBody').innerHTML = `
+            <div style="background:#F8FAFC; padding:12px; border-radius:8px; margin-bottom:12px;">
+              <strong style="color:var(--primary); font-size:1rem;">${selectedEvent.title || 'ไม่มีหัวข้อ'}</strong>
+              <div style="color:var(--text-muted); font-size:0.85rem;">ห้อง: ${props.roomName || '-'}</div>
             </div>
+            <div><strong>ผู้จอง:</strong> ${props.name || '-'} (${props.department || '-'})</div>
+            <div><strong>เบอร์โทร:</strong> ${props.phoneNumber || '-'}</div>
+            <div><strong>วัน-เวลา:</strong> ${startDate} (${startTime} - ${endTime} น.)</div>
+            <div><strong>ผู้เข้าร่วม:</strong> ${props.attendees || '-'} คน</div>
+            ${props.targetAudience ? `<div><strong>กลุ่มเป้าหมาย:</strong> ${props.targetAudience}</div>` : ''}
+            ${props.notes ? `<div><strong>หมายเหตุ:</strong> ${props.notes}</div>` : ''}
           `;
-          feedbackEl.className = 'info';
-          feedbackEl.style.display = 'block';
-          feedbackEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-          document.getElementById('deleteBookingBtnClient').onclick = async function() {
-            if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบการจองนี้?')) {
-              showLoading(true);
-              const res = await apiCall({ action: 'deleteBooking', bookingId: info.event.id });
-              showLoading(false);
-              if (res.success) {
-                showFeedback(res.message, 'success');
-                calendar.refetchEvents();
-              } else {
-                showFeedback('ลบไม่สำเร็จ: ' + res.error, 'error');
-              }
-            }
-          };
-
-          document.getElementById('closeEventDetailsBtnClient').onclick = function() {
-            feedbackEl.style.display = 'none';
-            feedbackEl.innerHTML = '';
-          };
+          
+          document.getElementById('eventDetailModal').style.display = 'flex';
+          lucide.createIcons();
         },
         events: async function(fetchInfo, successCallback, failureCallback) {
-          showLoading(true);
+          setCalLoading(true);
           const res = await apiCall({ action: 'getEvents' });
-          showLoading(false);
+          setCalLoading(false);
           if (res.success && Array.isArray(res.data)) {
             successCallback(res.data);
           } else {
-            showFeedback('ไม่สามารถโหลดข้อมูลปฏิทินได้', 'error');
+            showToast('โหลดข้อมูลปฏิทินไม่สำเร็จ', 'error');
             successCallback([]);
           }
         }
       });
+
       calendar.render();
 
-      window.addEventListener('resize', function() {
+      window.addEventListener('resize', () => {
         if (!calendar) return;
-        const mobile = window.innerWidth <= 600;
-        calendar.setOption('height', mobile ? 420 : 550);
+        const mobile = window.innerWidth <= 640;
+        calendar.setOption('height', mobile ? 420 : 560);
       });
     }
 
-    // =================================================================
-    // FORM & DATA HANDLING
-    // =================================================================
+    // Modal Events
+    function setupDetailModal() {
+      document.getElementById('closeEventModalBtn').onclick = () => {
+        document.getElementById('eventDetailModal').style.display = 'none';
+      };
+
+      document.getElementById('deleteBookingBtnModal').onclick = async () => {
+        if (!selectedEvent) return;
+        if (confirm(`ยืนยันการยกเลิกการจอง "${selectedEvent.title}" ใช่หรือไม่?`)) {
+          document.getElementById('eventDetailModal').style.display = 'none';
+          setCalLoading(true);
+          const res = await apiCall({ action: 'deleteBooking', bookingId: selectedEvent.id });
+          setCalLoading(false);
+          
+          if (res.success) {
+            showToast(res.message || 'ยกเลิกการจองสำเร็จ', 'success');
+            calendar.refetchEvents();
+          } else {
+            showToast(res.error || 'ลบไม่สำเร็จ', 'error');
+          }
+        }
+      };
+    }
+
+    // Rooms Load
     async function populateRoomDropdown() {
       const res = await apiCall({ action: 'getRooms' });
       if (res.success && Array.isArray(res.data)) {
         allRoomsData = res.data;
         const select = document.getElementById('roomSelect');
-        select.innerHTML = '<option value="">-- กรุณาเลือกห้อง --</option>';
+        select.innerHTML = '<option value="">-- เลือกห้องประชุม --</option>';
         res.data.forEach(room => {
           const opt = document.createElement('option');
           opt.value = room.RoomName;
-          opt.textContent = `${room.RoomName} (จุ ${room.Capacity || 'N/A'} คน)`;
+          opt.textContent = `${room.RoomName} (จุได้ ${room.Capacity || 'N/A'} คน)`;
           select.appendChild(opt);
         });
       } else {
-        showFeedback('โหลดข้อมูลห้องไม่สำเร็จ', 'error');
+        showToast('โหลดข้อมูลห้องประชุมไม่สำเร็จ', 'error');
       }
     }
 
+    // Form Submit
     function setupFormSubmit() {
       document.getElementById('bookingForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        const btn = document.getElementById('uploadButton');
-        btn.disabled = true;
-        showLoading(true);
+        setFormLoading(true);
 
         const formData = {
           nameInput: document.getElementById('nameInput').value.trim(),
@@ -671,25 +851,21 @@
         };
 
         const res = await apiCall({ action: 'submitBooking', formData: formData });
-        
-        showLoading(false);
-        btn.disabled = false;
-        
+        setFormLoading(false);
+
         if (res.success) {
-          showFeedback(res.message || 'จองสำเร็จ', 'success');
+          showToast(res.message || 'บันทึกการจองสำเร็จแล้ว', 'success');
           document.getElementById('bookingForm').reset();
           document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
-          document.getElementById('maxCapacity').textContent = 'N/A';
+          document.getElementById('maxCapacity').textContent = 'ความจุ N/A';
           if (calendar) calendar.refetchEvents();
         } else {
-          showFeedback(res.error || 'จองไม่สำเร็จ', 'error');
+          showToast(res.error || 'จองไม่สำเร็จ กรุณาลองใหม่อีกครั้ง', 'error');
         }
       });
     }
 
-    // =================================================================
-    // REPORT MODAL
-    // =================================================================
+    // Report Logic
     function openReportModal(type) {
       currentReportType = type;
       const title = document.getElementById('modalTitle');
@@ -700,24 +876,38 @@
       const d = String(now.getDate()).padStart(2, '0');
 
       if (type === 'daily') {
-        title.textContent = 'รายงานรายวัน';
-        container.innerHTML = `<div class="form-group"><label>วันที่</label><input type="date" id="reportDateInput" value="${y}-${m}-${d}"></div>`;
+        title.textContent = 'สร้างรายงานรายวัน';
+        container.innerHTML = `
+          <div class="form-group">
+            <label>เลือกวันที่ต้องการออกรายงาน</label>
+            <input type="date" id="reportDateInput" value="${y}-${m}-${d}">
+          </div>`;
       } else if (type === 'monthly') {
-        title.textContent = 'รายงานรายเดือน';
+        title.textContent = 'สร้างรายงานรายเดือน';
         let opts = '';
         for (let i = 1; i <= 12; i++) {
           const mm = String(i).padStart(2, '0');
-          opts += `<option value="${mm}" ${mm === m ? 'selected' : ''}>${mm}</option>`;
+          opts += `<option value="${mm}" ${mm === m ? 'selected' : ''}>เดือน ${i}</option>`;
         }
         container.innerHTML = `
-          <div class="form-group"><label>เดือน</label><select id="reportMonthInput">${opts}</select></div>
-          <div class="form-group"><label>ปี</label><input type="number" id="reportYearInputMonth" value="${y}" min="2020" max="2100"></div>
-        `;
+          <div class="form-group" style="margin-bottom:12px;">
+            <label>เลือกเดือน</label>
+            <select id="reportMonthInput">${opts}</select>
+          </div>
+          <div class="form-group">
+            <label>ระบุปี (ค.ศ.)</label>
+            <input type="number" id="reportYearInputMonth" value="${y}" min="2020" max="2100">
+          </div>`;
       } else {
-        title.textContent = 'รายงานรายปี';
-        container.innerHTML = `<div class="form-group"><label>ปี</label><input type="number" id="reportYearInputYear" value="${y}" min="2020" max="2100"></div>`;
+        title.textContent = 'สร้างรายงานรายปี';
+        container.innerHTML = `
+          <div class="form-group">
+            <label>ระบุปี (ค.ศ.)</label>
+            <input type="number" id="reportYearInputYear" value="${y}" min="2020" max="2100">
+          </div>`;
       }
       document.getElementById('reportModal').style.display = 'flex';
+      lucide.createIcons();
     }
 
     function closeReportModal() {
@@ -730,36 +920,33 @@
         const container = document.getElementById('modalInputsContainer');
 
         if (currentReportType === 'daily') {
-          const val = container.querySelector('#reportDateInput')?.value;
-          if (val) filterDate = val;
+          filterDate = container.querySelector('#reportDateInput')?.value;
         } else if (currentReportType === 'monthly') {
           const m = container.querySelector('#reportMonthInput')?.value;
           const y = container.querySelector('#reportYearInputMonth')?.value;
-          if (m && y) filterDate = y + '-' + m;
+          if (m && y) filterDate = `${y}-${m}`;
         } else if (currentReportType === 'yearly') {
-          const y = container.querySelector('#reportYearInputYear')?.value;
-          if (y) filterDate = y;
+          filterDate = container.querySelector('#reportYearInputYear')?.value;
         }
 
         if (!filterDate) {
-          alert('กรุณาระบุข้อมูลให้ครบ');
+          showToast('กรุณาระบุข้อมูลให้ครบถ้วน', 'error');
           return;
         }
 
         closeReportModal();
-        showLoading(true);
+        showToast('กำลังประมวลผลรายงาน PDF...', 'info');
 
         const res = await apiCall({ action: 'generateReport', reportType: currentReportType, filterParam: filterDate });
         
-        showLoading(false);
         if (res.success && res.pdfBase64) {
           const a = document.createElement('a');
           a.href = 'data:application/pdf;base64,' + res.pdfBase64;
-          a.download = res.fileName || 'report.pdf';
+          a.download = res.fileName || 'booking-report.pdf';
           a.click();
-          showFeedback('สร้างรายงานสำเร็จ', 'success');
+          showToast('ดาวน์โหลดรายงานเรียบร้อยแล้ว', 'success');
         } else {
-          showFeedback(res.error || 'สร้างรายงานไม่สำเร็จ (อาจลืมอัปเดตโค้ด PDF ฝั่ง .gs)', 'error');
+          showToast(res.error || 'สร้างรายงานไม่สำเร็จ', 'error');
         }
       });
     }
